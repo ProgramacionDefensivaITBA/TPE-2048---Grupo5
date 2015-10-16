@@ -75,7 +75,6 @@ while(flagSalida==0 && (turno=getchar())) {
 	}
 
 }
-
-return printf("El estado es %d\n", estado);
-
+printf("El estado es %d\n", estado);
+return 0;
 }
