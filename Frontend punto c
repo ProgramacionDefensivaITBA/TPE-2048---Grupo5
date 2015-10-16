@@ -21,11 +21,13 @@ while(flagSalida==0 && (turno=getchar())) {
 					estado=SAVE;
 				else if(turno=='q')
 					estado=QUIT;
+                else if(turno=='\n')
+                    printf("Comando NULL\n");
 				else
 					estado=ERROR;
 				break;
 		}
-		
+
 		case MOVIMIENTO: {
 				if(turno=='\n')	{
 					printf("Hago un movimiento\n");
@@ -34,8 +36,8 @@ while(flagSalida==0 && (turno=getchar())) {
 				else
 					estado=ERROR;
 				break;
-		}	
-	
+		}
+
 		case UNDO: {
 				if(turno=='\n')	{
 					printf("Hago un undo\n");
@@ -48,20 +50,41 @@ while(flagSalida==0 && (turno=getchar())) {
 
 		case SAVE: {
 				if(turno=='\n')	{
-					printf("Hago un save\n");
+					printf("Entro a funcion movMatriz (quiere mover todo para abajo)\n");
+					// llamada a funcion movMatriz
 					flagSalida=1;
-				}
-				else
+				} else if(turno=='a') {
+                    if(getchar()=='v') {
+                        if(getchar()=='e') {
+                            if(getchar()=='\n') {
+                                printf("Va a guardar la partida\n"); // llamada a funcion "Guardar"
+                                estado=INICIO;
+                            } else
+                                estado=ERROR;
+                        } else
+                            estado=ERROR;
+                    } else
+                        estado=ERROR;
+				} else
 					estado=ERROR;
 				break;
 		}
 
 		case QUIT: {
-				if(turno=='\n')	{
-					printf("Hago un quit\n");
-					flagSalida=1;
-				}				
-				else
+				if(turno=='u') {
+                    if(getchar()=='i') {
+                        if(getchar()=='t') {
+                            if(getchar()=='\n') {
+                                printf("Hago un quit\n");
+                                flagSalida=1;
+/* debe preguntar si quiere guardar antes de salir (llamada a la funcion "Guardar") */
+                            } else
+                                estado=ERROR;
+                        } else
+                            estado=ERROR;
+                    } else
+                        estado=ERROR;
+				} else
 					estado=ERROR;
 				break;
 		}
@@ -69,12 +92,15 @@ while(flagSalida==0 && (turno=getchar())) {
 		case ERROR: {
 				printf("Error\n");
 				flagSalida=1;
-				
+
 				break;
 		}
 	}
 
 }
+
 printf("El estado es %d\n", estado);
+
 return 0;
+
 }
