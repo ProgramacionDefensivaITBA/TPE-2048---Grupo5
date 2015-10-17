@@ -1,0 +1,12 @@
+int
+creaMatriz(int dif)
+{
+  int **matriz;
+  int i, j;
+  matriz=malloc()
+  if(matriz != NULL){
+    for(i=0; i<;i++)
+      matriz[][]=' ';
+      } else printf("No hay espacio");
+
+}
