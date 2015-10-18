@@ -2,21 +2,22 @@
 #include "getnum.h"
 #include <math.h>
 
-void creaMatriz(int dif);
-
-// Esta el main tmb que te pide la dificultad, ademas de la funcion. Te dice como llamarla por lo menos.
+int creaMatriz(int dif);
 
 int
 main()
 {
 int dificultad=0;
 do {
-    dificultad=getint("Ingrese la dificultad que desea, facil1, normal2 o life3:  ");
+    dificultad=getint("Ingrese la dificultad que desea, facil1, intermedio2 o dificil3:  ");
     if(dificultad != 1 && dificultad != 2 && dificultad != 3)
         printf("\nError\n");
 } while(dificultad != 1 && dificultad != 2 && dificultad != 3);
-if(creaMatriz(dificultad))
+if(creaMatriz(dificultad)) {
     printf("A jugar!\n");
+    if(dificultad==3)
+       printf("\nAnd may the odds be ever in your favor...\n\n");
+}
 else {
     printf("No tiene suficiente espacio para jugar este asombroso juego!\n");
     // LLAMADA A FUNCION QUIT?
