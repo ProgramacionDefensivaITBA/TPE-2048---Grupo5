@@ -15,7 +15,7 @@ do {
     printf("Comando no reconocido\n");
     while(getchar() != '\n');
 } while(enter != '\n' || dirVec!='w' || dirVec!='a' || dirVec!='s' || dirVec!='d')
-
+/* Hasta aca es solo el input... ahora hay que hacer el movimiento */
 
 
 return 0;
