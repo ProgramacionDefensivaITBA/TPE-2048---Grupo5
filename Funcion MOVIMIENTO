@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+void movimiento(char dirVec);
+
+int
+main(void)
+{
+char dirVec, enter;
+printf("Ingrese la direccion en la que se realiza el movimiento");
+do {
+dirVec = getchar();
+enter = getchar();
+} while(enter
+
+return 0;
+}
