@@ -1,33 +1,50 @@
 #include <stdio.h>
+#include "getnum.h"
 #include <stdlib.h>
 
-int main(void)
+int **creaMatriz(int dim);
+
+int main()
 {
 int **matriz;
-int i, j, k;
-int dim=4;
+int dim, i, j;
+
+do{
+    dim=getint("Numero de filas: ");
+    if(dim>10)
+        printf("El numero de filas no puede superar 10\n");
+}while(dim>10);
+
+matriz=creaMatriz(dim);
+
+for(i=0; i<dim; i++)
+    for(j=0; j<dim; j++) {
+        printf("%d      ", matriz[i][j]);
+        if((j+1)%dim==0)
+            printf("\n");
+    }
+return 0;
+}
+
+int **creaMatriz(int dim)
+{
+int **matriz;
+int i;
 
 matriz=calloc(dim, sizeof(*matriz));
 
 if(matriz==NULL)
-	printf("NULL1\n");
+    return NULL;
 else {
-	for(k=0; k<dim; k++) {
-		matriz[k]=calloc(dim, sizeof(matriz));
-		/*usar un aux*/
+    for(i=0; i<dim; i++) {
+        matriz[i]=calloc(dim, sizeof(matriz));
+        /*usar un aux*/
 
-		if(matriz[k]==NULL)
-		/*hacer los frees*/
-		printf("NULL2\n");
-	}
+        if(matriz[i]==NULL)
+        /*hacer los frees*/
+            return NULL;
+    }
 }
 
-for(i=0; i<dim; i++)
-	for(j=0; j<dim; j++) {
-		printf("%4d", matriz[i][j]);
-		if((j+1)%4==0)
-			printf("\n");
-	}
-
-return 0;
+return matriz;
 }
