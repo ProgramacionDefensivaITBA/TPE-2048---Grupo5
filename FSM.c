@@ -66,12 +66,12 @@ turno=getchar();
 			}
 			case 'u': {
 			    for(i=0; i<4 && getchar() == undo[i] ; i++)
-                    ;
-                if(i==4)
-                    estado=UNDO;
-				else
-                    estado=ERROR;
-                break;
+               			;
+                	    if(i==4)
+		                    estado=UNDO;
+			    else
+		                    estado=ERROR;
+                	break;
 			}
 			case 's': {
 			    c=getchar();
@@ -87,7 +87,6 @@ turno=getchar();
                         do
                             nombreArchivo[j] = getchar();
                         while(j<35 && (nombreArchivo[j++]!='\n'));
-//                        while(getchar()!='\n');
                         nombreArchivo[j]='\0';
                         if(j==35)
                             printf("\nEl nombre del archivo guardo solo los primeros 35 chars!!\n");
