@@ -1,0 +1,118 @@
+/*Este main crea una matriz de dim x dim (menor a 10) segun lo que le pones en el getint, la llena con ceros, y 
+le agrega 8 números al azar (2 o 4 con 89% y 11%) en lugares al azar donde haya ceros*/
+
+#include <stdio.h>
+#include "getnum.h"
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+
+int **creaMatriz(int dim);
+void liberaMatriz(int n, int **matriz);
+double randNormalize(void);
+int randInt(int izq, int der);
+void nuevoNum(int dim, int **matriz);
+int calcAzar(void);
+
+int main()
+{
+    int **matriz;
+    int dim, i, j, k;
+    srand(time(0));
+
+    do{
+        dim=getint("Numero de filas: ");
+        if(dim>10)
+            printf("El numero de filas no puede superar 10\n");
+    }while(dim>10);
+
+    matriz=creaMatriz(dim);
+
+    for(i=0; i<dim; i++)
+        for(j=0; j<dim; j++) {
+            printf("%d      ", matriz[i][j]);
+            if((j+1)%dim==0)
+                printf("\n");
+        }
+
+    for(k=0; k<8; k++){
+                printf("\n");
+
+    nuevoNum(dim, matriz);
+
+    for(i=0; i<dim; i++)
+        for(j=0; j<dim; j++) {
+            printf("%d      ", matriz[i][j]);
+            if((j+1)%dim==0)
+                printf("\n");
+        }
+    }
+
+    return 0;
+}
+
+int **creaMatriz(int dim)
+{
+    int **matriz;
+    int i;
+
+    matriz=calloc(dim, sizeof(*matriz));
+
+    if(matriz==NULL)
+        return NULL;
+    else {
+        for(i=0; i<dim; i++) {
+            matriz[i]=calloc(dim, sizeof(matriz));
+            /*usar un aux*/
+
+            if(matriz[i]==NULL){
+                liberaMatriz(i, matriz);
+                return NULL;
+            }
+        }
+
+    return matriz;
+}
+}
+
+void liberaMatriz(int n, int **matriz)
+{
+    int i;
+    for(i=0; i<=n; i++)
+        free(matriz[i]);
+    free(matriz);
+}
+
+double randNormalize(void)
+{
+    return rand()/((double)RAND_MAX+1);
+}
+
+int randInt(int izq, int der)
+{
+    return (int)(randNormalize()*(der-izq+1)+izq);
+}
+
+void nuevoNum(int dim, int **matriz)
+{
+    int i, j;
+
+    do{
+            i=randInt(0, dim-1);
+            j=randInt(0, dim-1);
+
+
+    }while(matriz[i][j]!=0);
+
+    matriz[i][j]=calcAzar();
+}
+
+int calcAzar(void)
+{
+    double azar;
+    azar = rand()/(double)RAND_MAX*(100-1)+1;
+    if(azar<11)
+        return 4;
+    else
+        return 2;
+}
