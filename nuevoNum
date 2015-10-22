@@ -1,0 +1,16 @@
+/*Pone un nuevo numero random 2 o 4 donde haya un lugar con cero. Quizas hay que modificar algo pq si ya está casi llena 
+la matriz, va a tardar un toque en econtrar un lugar con un cero para agregar un nuevo rand*/
+
+void nuevoNum(int dim, int **matriz)
+{
+    int i, j;
+
+    do{
+            i=randInt(0, dim-1);
+            j=randInt(0, dim-1);
+
+
+    }while(matriz[i][j]!=0);
+
+    matriz[i][j]=calcAzar();
+}
