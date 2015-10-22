@@ -1,8 +1,13 @@
+/*Crea el tablero y lo imprime, con una dim de maximo 10 que en realidad solo puede ser 4, 6 u 8 y se le pasamos
+según la dificultad*/
+/*Al final está la función que libera la matriz si da NULL*/
+
 #include <stdio.h>
 #include "getnum.h"
 #include <stdlib.h>
 
 int **creaMatriz(int dim);
+void liberaMatriz(int n, int **matriz);
 
 int main()
 {
@@ -38,13 +43,22 @@ if(matriz==NULL)
 else {
     for(i=0; i<dim; i++) {
         matriz[i]=calloc(dim, sizeof(matriz));
-        /*usar un aux*/
+        /*usar un aux, chequear que sea distinto de NULL, copiar el aux en matriz[i]*/
 
-        if(matriz[i]==NULL)
-        /*hacer los frees*/
-            return NULL;
+        if(matriz[i]==NULL){
+             liberaMatriz(i, matriz);
+             return NULL;
+        }
     }
 }
 
 return matriz;
+}
+
+void liberaMatriz(int n, int **matriz)
+{
+    int i;
+    for(i=0; i<=n; i++)
+        free(matriz[i]);
+    free(matriz);
 }
