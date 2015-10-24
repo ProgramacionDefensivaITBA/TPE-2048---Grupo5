@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "getnum.h"
 #include <stdlib.h>
+#include <time.h>
+#include <string.h>
 #include "backend2048.h"
 
 int menu(void);
@@ -8,11 +10,22 @@ int juegoNuevo(int dificultad);
 void anunciaDific(int dificultad);
 void imprMatAct(int **matriz, int dim);
 
+/*
+typedef? struct {
+    int **matActual?;
+    int **matAux;
+    int cantUndos;
+    int score;
+}variable?;
+*/
+
 int
 main()                      // aca esta el main! jaja
 {
-int dificultad=0, dim, juego=0;
+int dificultad=0, dim, juego=0, estado=0;
 int **matAux, **matActual;
+char * nombreArchivo[36], *dirVec;
+char s;
 srand(time(NULL));
 
 printf("    Bienvenido al juego 2048!\n");
@@ -57,12 +70,65 @@ switch(juego) {
 /* agrego 2 random a la matriz */
 nuevoNum(dim, matActual);
 nuevoNum(dim, matActual);
-// guardo la nueva en la aux
+/* guardo la nueva en la aux */
+matAux=memcpy(matAux, matActual, dim*sizeof(int));
+/* la imprimo */
 imprMatAct(matActual, dim);
-// pido nuevo mov. Undo en 0
-// hago el movimiento... si no es NULL, cambio matActual
-// aux lo dejo igual por ahora
+printf("\n\n\n");
 
+/* pido nuevo mov. Undo en 0 */
+putchar('\n');
+do {
+    estado=leerEntrada(nombreArchivo, &dirVec);
+    switch(estado) {
+        case 1: {
+            /* hago el movimiento... si no es NULL, cambio matActual */
+            movimiento(&dirVec, dim, matActual);
+            putchar('\n');
+            imprMatAct(matAux, dim);
+/*            if(verifMats(dim, matAux, matActual))     */
+                nuevoNum(dim, matActual);
+            putchar('\n');
+            imprMatAct(matActual, dim);
+            printf("\n\n\n");
+            putchar('\n');
+            putchar('\n');
+            break;
+        }
+        case 2: {
+            /* undo() */
+            break;
+        }
+        case 3: {
+            /* save(nombreArchivo) */
+            break;
+        }
+        case 4: {
+            printf("Desea guardar antes de salir? (y/n)\n");
+            do {
+                    s=getchar();                                            // ACA HAY ALGO QUE NO FUNCA
+                    if(s!='y' || s!='n')
+                            printf("Comando no reconocido. Desea guardar antes de salir?  (y/n)");
+            } while(s!='y' || s!='n');
+            printf("Gracias por jugar!");
+            break;
+        }
+        case 5: {
+            printf("\nComando no reconocido.\nLe recordamos que los comandos reconocidos son:\n");
+            printf("w, a, s, d -- movimientos\nsave -- guardar\nundo -- volver un paso atras*\nquit -- salir de la partida al menu\n");
+            printf("\n(Todos los comandos deben estar seguidos de un enter)\n");
+            printf("\n\n* El comando undo no permite hacer 2 undos seguido. ");
+            printf("Adicionalmente, si hizo un movimiento que no efectuo cambios, el undo le devolvera la matriz anterior al ultimo cambio.\n\n");
+            break;
+        }
+    }
+} while(leerEntrada(nombreArchivo, &dirVec)!=4);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
+
+// aux lo dejo igual por ahora
+/* probar usar un flagCambio que este en el movimiento que se prenda si hubo
+** un cambio, lo cual significa tmb que hay que guardar la matActual en la
+** matAux y habilitar el uso del undo!!!!
+*/
 
 return 0;
 }
@@ -72,7 +138,7 @@ menu(void)
 {
 int opcion=0;
 do {
-    opcion=getint("1. Juego nuevo!\n2. Recuperar un juego grabado.\n3. Salir.\n\n");
+    opcion=getint("\n1. Juego nuevo!\n2. Recuperar un juego grabado.\n3. Salir.\n\n");
     if(opcion != 1 && opcion != 2 && opcion != 3)
         printf("\nOpcion no reconocida! Pruebe devuelta.\n\n");
 } while(opcion != 1 && opcion != 2 && opcion != 3);
@@ -125,4 +191,3 @@ for(i=0; i<dim; i++)
             printf("\n");
     }
 }
-
