@@ -22,8 +22,19 @@ int calcAzar(void);
 void nuevoNum(int dim, int **matriz);
 /* calcula donde ponerle el nuevo numero */
 
-void liberaMatriz(int i, int **matriz)
+void liberaMatriz(int i, int **matriz);
 /* si no hay espacio para jugar, libera la matriz antes de salir */
 
-#endif // _backend2048_h
+void movimiento(char * c, int dim, int ** matriz);
+/* hace el movimiento de la matriz en la direccion recibida */
 
+void siCoincide(int i, int j, int ** matriz);
+/* condicion para que se tengan que "sumar" los numeros */
+
+int leerEntrada(char nombreArchivo[36], char *dirVec);
+/* lee la entrada estandar para saber el proximo movimiento, o paso a seguir que ingresa el usuario */
+
+int verifMats(int dim, int ** matAux, int ** matAct);
+/* verifica si la matriz anterior y la nueva son distintas. Devuelve cero si son iguales */
+
+#endif // _backend2048_h
