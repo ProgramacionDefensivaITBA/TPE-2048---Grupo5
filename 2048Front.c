@@ -88,6 +88,12 @@ do {
             imprMatAct(matAux, dim);
 /*            if(verifMats(dim, matAux, matActual))     */
                 nuevoNum(dim, matActual);
+/*
+** if(posibMov != Act)
+** Aux=Act;     memcpy?
+** Act=posibMov;
+** randNum-->Act;
+*/
             putchar('\n');
             imprMatAct(matActual, dim);
             printf("\n\n\n");
