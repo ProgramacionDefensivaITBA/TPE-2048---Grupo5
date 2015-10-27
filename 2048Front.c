@@ -23,18 +23,8 @@ typedef struct {
     int puntaje;
     int dim;
 } jugadaT;
+
 /*
-typedef struct {
-    int **matActual;
-    int **matAux;
-    int **matMov;
-    int *cantUndos;
-    int *puntaje;
-    int dim;
-} juegoT;
-
-juegoT juego;
-
 verifMatriz(&jugada * pjugada;juego);
 */
 
@@ -112,10 +102,10 @@ pjugada.matActual=memcpy(pjugada.matActual, pjugada.matMov, dim*sizeof(int));
 pjugada.matAux=memcpy(pjugada.matAux, pjugada.matActual, dim*sizeof(int));
 /* la imprimo */
 imprMatAct(pjugada.matActual, dim);
-printf("\n\n\n");
+putchar('\n');
+putchar('\n');
 
 /* pido nuevo mov. flagUndo en 0 */
-putchar('\n');
 
 do {
     estado=leerEntrada(nombreArchivo, &dirVec);
@@ -134,7 +124,6 @@ do {
 */
             putchar('\n');
             imprMatAct(pjugada.matActual, dim);
-            printf("\n\n\n");
             putchar('\n');
             putchar('\n');
             break;
@@ -183,7 +172,7 @@ void bienvenida(void)
 printf("    Bienvenido al juego 2048!\n");
 printf("\t(Version 1.0)\n");
 printf(" By Bortolozzi, Giorgi & Paganini\n");
-printf("\n\n\n");
+printf("\n\n");
 }
 
 int
