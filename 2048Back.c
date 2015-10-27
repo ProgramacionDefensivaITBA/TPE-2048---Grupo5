@@ -33,7 +33,6 @@ int *aux;
 int i, noHayEspacio=0;
 
 matriz=calloc(dim, sizeof(*matriz));
-
 if(matriz==NULL) {
     free(matriz);
     return NULL;
@@ -56,15 +55,31 @@ if(matriz==NULL) {
 }
 }
 
-void siCoincide(int i, int j, int ** matriz)
+void siCoincideD(int i, int j, int ** matriz)
 {
 int k;
-for(k=j-1; k>0; k--) {
+for(k=j-1; k>=0; k--) {
     if(matriz[i][j]==matriz[i][k]) {
         matriz[i][j] = matriz[i][j] * 2;
         matriz[i][k] = 0;
         return;
     }
+    if(matriz[i][k] != 0 && matriz[i][k] != matriz[i][j])
+        return;
+}
+}
+
+void siCoincideA(int i, int j, int ** matriz, int dim)
+{
+int k;
+for(k=1; k<j; k++) {
+    if(matriz[i][j]==matriz[i][k]) {
+        matriz[i][j] = matriz[i][j] * 2;
+        matriz[i][k] = 0;
+        return;
+    }
+    if(matriz[i][k] != 0 && matriz[i][k] != matriz[i][j])
+        return;
 }
 }
 
@@ -79,7 +94,7 @@ switch(*c) {
         for(i=0; i<dim; i++)
             for(j=dim-1; j>=0; j--) {
                 if(matriz[i][j] != 0) {
-                    siCoincide(i, j, matriz);
+                    siCoincideD(i, j, matriz);
                     if(j!=dim-1) {
                         l=j;
                         for(k=j+1; k<dim && l<dim-1; k++, l++)
@@ -91,7 +106,25 @@ switch(*c) {
                 }
             }
             break;
-    }
+}
+    case 'a': {
+            for(i=0; i<dim; i++)
+                for(j=0; j<dim; j++) {
+                    if(matriz[i][j] != 0) {
+                        siCoincideA(i, j, matriz, dim);
+                        if(j!=0) {
+                            l=j;
+                            for(k=j-1; k>=0 && l>0; k--, l--)
+                                if(matriz[i][k]==0) {
+                                    matriz[i][k]=matriz[i][l];
+                                    matriz[i][l]=0;
+                                }
+                        }
+                    }
+                }
+                break;
+        }
+
 }
 }
 
@@ -126,102 +159,22 @@ else
 
 void nuevoNum(int dim, int **matriz)
 {
-    int i, j;
+    int i, j, hayCeros=0;
 
-    do{
+    for(i=0; i<dim && hayCeros==0; i++)
+        for(j=0; j<dim && hayCeros==0; j++)
+            if(matriz[i][j]==0)
+                hayCeros=1;
+
+    if(hayCeros) {
+        do{
             i=randInt(0, dim-1);
             j=randInt(0, dim-1);
 
-    }while(matriz[i][j]!=0);
+        } while(matriz[i][j]!=0);
+    }
 
     matriz[i][j]=calcAzar();
-}
-
-int
-leerEntrada(char nombreArchivo[36], char *dirVec)
-{
-enum estado {MOVIMIENTO=1, UNDO, SAVE, QUIT, ERROR};
-char turno, c;
-char * quit="uit\n";
-char * save="ve ";
-char * undo="ndo\n";
-int i, j, estado=0;
-
-turno=getchar();
-
-	    switch(turno) {
-			case 'w': {
-			    if(getchar()=='\n') {
-                    *dirVec=turno;
-                    estado=MOVIMIENTO;
-			    } else
-                    estado=ERROR;
-			    break;
-			}
-			case 'a': {
-			    if(getchar()=='\n') {
-                    *dirVec=turno;
-                    estado=MOVIMIENTO;
-			    } else
-                    estado=ERROR;
-			    break;
-			}
-			case 'd': {
-			    if(getchar()=='\n') {
-                    *dirVec=turno;
-                    estado=MOVIMIENTO;
-			    } else
-                    estado=ERROR;
-			    break;
-			}
-			case 'u': {
-			    for(i=0; i<4 && getchar() == undo[i] ; i++)
-               			;
-                	    if(i==4)
-		                    estado=UNDO;
-			    else
-		                    estado=ERROR;
-                	break;
-			}
-			case 's': {
-			    c=getchar();
-			    if(c=='\n') {
-                    *dirVec=turno;
-                    estado=MOVIMIENTO;
-			    } else if(c=='a') {
-			        for(i=0; i<3 && getchar() == save[i] ; i++)
-                        ;
-                    if(i==3) {
-                        estado=SAVE;
-                        j=0;
-                        do
-                            nombreArchivo[j] = getchar();
-                        while(j<35 && (nombreArchivo[j++]!='\n'));
-                        nombreArchivo[j]='\0';
-                        if(j==35)                                       // ESTE PRINTF NO VA ACA EN EL BACKEND!
-                            printf("\nEl nombre del archivo guardo solo los primeros 35 chars!!\n");
-                        } else
-                            estado=ERROR;
-                } else
-                    estado=ERROR;
-				break;
-			}
-			case 'q': {
-			    for(i=0; i<4 && getchar() == quit[i] ; i++)
-                       ;
-                if(i==4)
-                    estado=QUIT;
-                else
-                    estado=ERROR;
-			    break;
-			}
-			default: {
-			    while(getchar() != '\n');
-			    estado=ERROR;
-			}
-	    }
-
-return estado;
 }
 
 int verifMats(int dim, int ** matAux, int ** matAct)
@@ -235,3 +188,17 @@ for(i=0; i<dim && distintas==0; i++)
 
 return distintas;
 }
+
+
+/*
+int verifMats(jugada* juego)
+{
+int i, j, distintas=0;
+
+for(i=0; i<jugada->dim && distintas==0; i++)
+    for(j=0; j<jugada->dim && distintas==0; j++)
+        if(jugada->matAct[i][j] != jugada->matAux[i][j])
+            distintas=1;
+
+return distintas;
+}*/
