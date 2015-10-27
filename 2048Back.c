@@ -166,15 +166,15 @@ void nuevoNum(int dim, int **matriz)
             if(matriz[i][j]==0)
                 hayCeros=1;
 
-    if(hayCeros) {
+    if(hayCeros==1){
         do{
             i=randInt(0, dim-1);
             j=randInt(0, dim-1);
 
         } while(matriz[i][j]!=0);
+        matriz[i][j]=calcAzar();
     }
 
-    matriz[i][j]=calcAzar();
 }
 
 int verifMats(int dim, int ** matAux, int ** matAct)
