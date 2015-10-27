@@ -167,7 +167,7 @@ do {
         }
     }
 
-} while(estado!=4);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
+} while(estado!=QUIT);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
 
 // aux lo dejo igual por ahora
 /* probar usar un flagCambio que este en el movimiento que se prenda si hubo
