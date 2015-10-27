@@ -4,6 +4,8 @@
 
 #define _backend2048_h
 
+#define BORRA_BUFFER while (getchar() != '\n')
+
 int tamMatriz(int dificultad);
 /* elige el tamaño de la matriz a partir de la dif*/
 
@@ -28,11 +30,10 @@ void liberaMatriz(int i, int **matriz);
 void movimiento(char * c, int dim, int ** matriz);
 /* hace el movimiento de la matriz en la direccion recibida */
 
-void siCoincide(int i, int j, int ** matriz);
+void siCoincideD(int i, int j, int ** matriz);
 /* condicion para que se tengan que "sumar" los numeros */
 
-int leerEntrada(char nombreArchivo[36], char *dirVec);
-/* lee la entrada estandar para saber el proximo movimiento, o paso a seguir que ingresa el usuario */
+void siCoincideA(int i, int j, int ** matriz, int dim);
 
 int verifMats(int dim, int ** matAux, int ** matAct);
 /* verifica si la matriz anterior y la nueva son distintas. Devuelve cero si son iguales */
