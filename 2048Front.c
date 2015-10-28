@@ -23,6 +23,7 @@ int juegoNuevo(int dificultad);
 void anunciaDific(int dificultad);
 void imprMatAct(int **matriz, int dim);
 int leerEntrada(char nombreArchivo[36], char *dirVec);
+int verifMats(juegoT * pjugada);
 int comienzo(int opcion, juegoT * pjugada);
 int comienzoJuego(juegoT * pjugada);
 int comandos(juegoT * pjugada);
@@ -279,7 +280,7 @@ comandos(juegoT * pjugada)
 char *dirVec;
 char s;
 char * nombreArchivo[36];
-int estado=0, salirAMenu, guardar;
+int estado=0, salirAMenu, guardar, movDisp=2, i, j;
 do {
     estado=leerEntrada(nombreArchivo, &dirVec);
     switch(estado) {
@@ -287,8 +288,23 @@ do {
             /* hago el movimiento... si no es NULL, cambio matActual */
             movimiento(&dirVec, pjugada->dim, pjugada->matActual);
             putchar('\n');
-/*            if(verifMats(dim, matAux, matActual))     */
-                nuevoNum(pjugada->dim, pjugada->matActual);
+            /*if(verifMats(pjugada)) {*/
+                if((nuevoNum(pjugada->dim, pjugada->matActual))==0) {
+                    putchar('g');
+                    for(i=0; i<pjugada->dim && movDisp==0; i++)
+                        for(j=0; j<(pjugada->dim)-1 && movDisp==0; j++)
+                            if(pjugada->matMov[i][j] == pjugada->matMov[i][j+1])
+                                movDisp=1;
+
+                    for(j=0; j<pjugada->dim && movDisp==0; j++)
+                        for(i=0; i<(pjugada->dim)-1 && movDisp==0; i++)
+                            if(pjugada->matMov[i][j] == pjugada->matMov[i+1][j]) {
+                                movDisp=1; putchar('h');
+                            }
+                }
+                if(movDisp==0)
+                    printf("\n\nPerdiste!\n\n");
+            /*}*/
 /* verificar que haya hecho un mov no NULL */
             putchar('\n');
             imprMatAct(pjugada->matActual, pjugada->dim);
@@ -333,6 +349,18 @@ do {
 } while(estado!=QUIT);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
 
 return salirAMenu;
+}
+
+int verifMats(juegoT * pjugada)
+{
+int i, j, distintas=0;
+
+for(i=0; i<pjugada->dim && distintas==0; i++)
+    for(j=0; j<pjugada->dim && distintas==0; j++)
+        if(pjugada->matActual[i][j] != pjugada->matAux[i][j])
+            distintas=1;
+
+return distintas;
 }
 
 /* fin del front-end */
