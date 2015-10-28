@@ -72,8 +72,8 @@ for(k=j-1; k>=0; k--) {
 void siCoincideA(int i, int j, int ** matriz, int dim)
 {
 int k;
-for(k=1; k<j; k++) {
-    if(matriz[i][j]==matriz[i][k]) {
+for(k=j+1; k<dim; k++) {
+    if(matriz[i][k]==matriz[i][j]) {
         matriz[i][j] = matriz[i][j] * 2;
         matriz[i][k] = 0;
         return;
@@ -83,11 +83,39 @@ for(k=1; k<j; k++) {
 }
 }
 
+void siCoincideW(int i, int j, int ** matriz, int dim)
+{
+int k;
+for(k=i+1; k<dim; k++) {
+    if(matriz[k][j]==matriz[i][j]) {
+        matriz[i][j] = matriz[i][j] * 2;
+        matriz[k][j] = 0;
+        return;
+    }
+    if(matriz[k][j] != 0 && matriz[k][j] != matriz[i][j])
+        return;
+}
+}
+
+void siCoincideS(int i, int j, int ** matriz)
+{
+int k;
+for(k=i-1; k>=0; k--) {
+    if(matriz[k][j]==matriz[i][j]) {
+        matriz[i][j] = matriz[i][j] * 2;
+        matriz[k][j] = 0;
+        return;
+    }
+    if(matriz[k][j] != 0 && matriz[k][j] != matriz[i][j])
+        return;
+}
+}
+
 void movimiento(char * c, int dim, int ** matriz)
 {
 int i, j, k, l;
 /*
-de atras para adelante... { if( ! 0 ) then { if(match) { num*2 ; free(elDeSobra); rellenar con ceros? ; } } }
+de atras para adelante... { if( ! 0 ) then { if(match) { num*2 ; "free"(elDeSobra)... rellenar con ceros ; } } }
 */
 switch(*c) {
     case 'd': {
@@ -123,7 +151,41 @@ switch(*c) {
                     }
                 }
                 break;
-        }
+    }
+    case 'w': {
+                for(j=0; j<dim; j++)
+                    for(i=0; i<dim; i++) {
+                        if(matriz[i][j] != 0) {
+                            siCoincideW(i, j, matriz, dim);
+                            if(i!=0) {
+                                l=i;
+                                for(k=i-1; k>=0 && l>0; k--, l--)
+                                    if(matriz[k][j]==0) {
+                                        matriz[k][j]=matriz[l][j];
+                                        matriz[l][j]=0;
+                                    }
+                            }
+                        }
+                    }
+                    break;
+    }
+    case 's': {
+        for(j=0; j<dim; j++)
+            for(i=dim-1; i>=0; i--) {
+                if(matriz[i][j] != 0) {
+                    siCoincideS(i, j, matriz);
+                    if(i!=dim-1) {
+                        l=i;
+                        for(k=i+1; k<dim && l<dim-1; k++, l++)
+                            if(matriz[k][j]==0) {
+                                matriz[k][j]=matriz[l][j];
+                                matriz[l][j]=0;
+                            }
+                    }
+                }
+            }
+            break;
+    }
 
 }
 }
@@ -157,7 +219,7 @@ else
     return 2;
 }
 
-void nuevoNum(int dim, int **matriz)
+int nuevoNum(int dim, int **matriz)
 {
     int i, j, hayCeros=0;
 
@@ -174,9 +236,9 @@ void nuevoNum(int dim, int **matriz)
         } while(matriz[i][j]!=0);
         matriz[i][j]=calcAzar();
     }
-
+return hayCeros;
 }
-
+/*
 int verifMats(int dim, int ** matAux, int ** matAct)
 {
 int i, j, distintas=0;
@@ -188,17 +250,26 @@ for(i=0; i<dim && distintas==0; i++)
 
 return distintas;
 }
-
-
-/*
-int verifMats(jugada* juego)
+*/
+int cantUndo(int dificultad)
 {
-int i, j, distintas=0;
+int undo;
 
-for(i=0; i<jugada->dim && distintas==0; i++)
-    for(j=0; j<jugada->dim && distintas==0; j++)
-        if(jugada->matAct[i][j] != jugada->matAux[i][j])
-            distintas=1;
+switch(dificultad) {
 
-return distintas;
-}*/
+    case 1: {
+              undo=8;
+              break;
+    }
+    case 2: {
+              undo=4;
+              break;
+    }
+    case 3: {
+              undo=2;
+              break;
+    }
+}
+return undo;
+}
+
