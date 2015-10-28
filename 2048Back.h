@@ -21,7 +21,7 @@ int randInt(int izq, int der);
 int calcAzar(void);
 /* calcula si ponerle un 2 o el raro caso del 4*/
 
-void nuevoNum(int dim, int **matriz);
+int nuevoNum(int dim, int **matriz);
 /* calcula donde ponerle el nuevo numero */
 
 void liberaMatriz(int i, int **matriz);
@@ -32,10 +32,14 @@ void movimiento(char * c, int dim, int ** matriz);
 
 void siCoincideD(int i, int j, int ** matriz);
 /* condicion para que se tengan que "sumar" los numeros */
-
 void siCoincideA(int i, int j, int ** matriz, int dim);
+void siCoincideW(int i, int j, int ** matriz, int dim);
+void siCoincideS(int i, int j, int ** matriz);
 
-int verifMats(int dim, int ** matAux, int ** matAct);
+
 /* verifica si la matriz anterior y la nueva son distintas. Devuelve cero si son iguales */
+
+int cantUndo(int dificultad);
+/* designa la cantidad de undos dependiendo la dificultad */
 
 #endif // _backend2048_h
