@@ -142,7 +142,7 @@ switch(opcion) {
         break;
     }
     case 3: {
-        /*printf("\n\nGracias por jugar!\n\n");*/
+        salir=1;
                                                                             // ACA FALTARIA HACER EL FREE?
         return salir;
     }
@@ -280,7 +280,7 @@ comandos(juegoT * pjugada)
 char *dirVec;
 char s;
 char * nombreArchivo[36];
-int estado=0, salirAMenu, guardar, movDisp=2, i, j;
+int estado=0, salirAMenu, guardar, movDisp, i, j;
 do {
     estado=leerEntrada(nombreArchivo, &dirVec);
     switch(estado) {
@@ -290,8 +290,7 @@ do {
             putchar('\n');
             /*if(verifMats(pjugada)) {*/
                 if((nuevoNum(pjugada->dim, pjugada->matActual))==0) {
-                    putchar('g');
-                    for(i=0; i<pjugada->dim && movDisp==0; i++)
+                    for(i=0, movDisp=0; i<pjugada->dim && movDisp==0; i++)
                         for(j=0; j<(pjugada->dim)-1 && movDisp==0; j++)
                             if(pjugada->matMov[i][j] == pjugada->matMov[i][j+1])
                                 movDisp=1;
@@ -299,16 +298,18 @@ do {
                     for(j=0; j<pjugada->dim && movDisp==0; j++)
                         for(i=0; i<(pjugada->dim)-1 && movDisp==0; i++)
                             if(pjugada->matMov[i][j] == pjugada->matMov[i+1][j]) {
-                                movDisp=1; putchar('h');
+                                movDisp=1;
                             }
                 }
-                if(movDisp==0)
+                if(movDisp==0) {
                     printf("\n\nPerdiste!\n\n");
+                    estado=QUIT;
+                    break;
+                }
             /*}*/
 /* verificar que haya hecho un mov no NULL */
             putchar('\n');
             imprMatAct(pjugada->matActual, pjugada->dim);
-            putchar('\n');
             putchar('\n');
             break;
         }
