@@ -4,8 +4,7 @@
 #include "2048Back.h"
 
 
-int
-tamMatriz(int dificultad)
+int tamMatriz(int dificultad)
 {
 int tamMat=0;
 
@@ -238,19 +237,7 @@ int nuevoNum(juegoT * pjugada)
     }
 return hayCeros;
 }
-/*
-int verifMats(int dim, int ** matAux, int ** matAct)
-{
-int i, j, distintas=0;
 
-for(i=0; i<dim && distintas==0; i++)
-    for(j=0; j<dim && distintas==0; j++)
-        if(matAct[i][j] != matAux[i][j])
-            distintas=1;
-
-return distintas;
-}
-*/
 int cantUndo(int dificultad)
 {
 int undo=0;
@@ -273,22 +260,7 @@ switch(dificultad) {
 return undo;
 }
 
-/*int
-verifMats(juegoT * pjugada)
-{
-int i, j, distintas=0;
-
-for(i=0; i<pjugada->dim && distintas==0; i++)
-    for(j=0; j<pjugada->dim && distintas==0; j++)
-        if(pjugada->matActual[i][j] != pjugada->matAux[i][j])
-            distintas=1;
-
-return distintas;
-}
-*/
-
-int
-movDisponibles(juegoT * pjugada)
+int movDisponibles(juegoT * pjugada)
 {
 int i, j, movDisp=0;
 
@@ -305,8 +277,7 @@ for(j=0; j<pjugada->dim && movDisp==0; j++)
 return movDisp;
 }
 
-int
-verificaNoNulo(juegoT * pjugada)
+int verificaNoNulo(juegoT * pjugada)
 {
 int i, j, movNoNulo=0;
 //printf("matMov cambia");
