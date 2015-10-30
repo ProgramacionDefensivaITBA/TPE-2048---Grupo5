@@ -3,24 +3,24 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "2048Back.h"
+#include "Backend.h"
+
+#define CUATLETRAS 4
 
 enum estado {MOVIMIENTO=1, UNDO, QUIT, SAVE, ERROR};
-
 
 void bienvenida(void);
 int menu(void);
 int juegoNuevo(int dificultad);
 void anunciaDific(int dificultad);
-void impMatriz(int **matriz, int dim);
+void impMatriz(int **matriz, juegoT * pjugada);
 int leerEntrada(char nombreArchivo[36], char *dirVec);
 int comienzo(int opcion, juegoT * pjugada);
 int comienzoJuego(juegoT * pjugada);
 int comandos(juegoT * pjugada);
+int salir(int salirAMenu);
 
-/* como llamar structs segun JuanFra
-verifMatriz(&jugada * pjugada;juego);
-*/
+
 
 int
 main()                      // aca esta el main
@@ -28,7 +28,7 @@ main()                      // aca esta el main
 srand(time(NULL));
 
 juegoT pjugada;
-int juego=0, salir;
+int juego=0, salir=0;
 
 bienvenida();
 do {
@@ -118,27 +118,27 @@ switch(opcion) {
             return 0;
         }
         salir=comienzoJuego(pjugada);
-        return salir;                   //aca retornea salir? o que?
         break;
     }
     case 2: {
         printf("Cargando la partida anterior...\n");                         // falta el LOAD FILE aca!!
-        return 0;
         break;
     }
     case 3: {
         salir=1;
-        return salir;
+        break;
     }                                                                // ACA FALTARIA HACER EL FREE?
 }
-return salir;       //y aca retornea salir tmb? o que?
+return salir;
 }
 
 int
 comienzoJuego(juegoT * pjugada)
 {
 int salir;
-
+pjugada->puntaje=0;
+pjugada->puntAux=0;
+pjugada->puntAnterior=0;
 nuevoNum(pjugada);          //agrego 2 random a la matriz
 nuevoNum(pjugada);
 pjugada->flagUndo=1;
@@ -146,16 +146,131 @@ pjugada->flagUndo=1;
 copiaMatriz(pjugada->matMov, pjugada->matActual, pjugada->dim);     //guardo la nueva en la actual
 copiaMatriz(pjugada->matActual, pjugada->matAux, pjugada->dim);     // guardo la nueva en la aux
 putchar('\n');
-impMatriz(pjugada->matActual, pjugada->dim);       //imprimo y a jugar
-
-putchar('\n');
-putchar('\n');
+impMatriz(pjugada->matActual, pjugada);       //imprimo y a jugar
 
 salir=comandos(pjugada);
 
 return salir;
 }
 
+
+int
+leerEntrada(char nombreArchivo[36], char * dirVec)
+{
+int i=0, j, k, estado=0;
+char c;
+char * s=NULL, * aux;
+char * quit="quit\n";
+char * save="save ";
+char * undo="undo\n";
+char * wmov="w\n";
+char * amov="a\n";
+char * smov="s\n";
+char * dmov="d\n";
+
+s=malloc(CUATLETRAS*sizeof(char));
+
+s[i]=getchar();
+
+if(s[i] == '\n')
+    return ERROR;
+
+do {
+    i++;
+    if(i%CUATLETRAS == 0) {
+        aux=realloc(s, (i+CUATLETRAS)*sizeof(char*));
+        if(aux==NULL) {
+            free(s);
+            return ERROR;
+        }
+        s=aux;
+    }
+
+    s[i]=getchar();
+} while(s[i] != '\n');
+
+s=realloc(s, i*sizeof(char*));
+
+switch(s[0]) {
+    case 'w': {
+        for(k=1; k<=i &&  s[k] == wmov[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=MOVIMIENTO;
+        else
+            estado=ERROR;
+        break;
+    }
+    case 'a': {
+        for(k=1; k<=i &&  s[k] == amov[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=MOVIMIENTO;
+        else
+            estado=ERROR;
+        break;
+    }
+    case 's': {
+        if(i==2) {
+            for(k=1; k<=i && s[k] == smov[k]; k++)
+                ;
+            if(k==2) {
+                estado=MOVIMIENTO;
+            } else
+                estado=ERROR;
+        } else {
+            for(k=1; k<=CUATLETRAS+1 &&  s[k] == save[k] ; k++)  // save + espacio
+                ;
+            if(k==5) {
+                for(j=0; k<i && k<36; k++, j++)
+                    nombreArchivo[j]=s[k];
+                estado=SAVE;
+                nombreArchivo[j]=0;
+            } else
+                estado=ERROR;
+        }
+        break;
+    }
+    case 'd': {
+        for(k=1; k<=i &&  s[k] == dmov[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=MOVIMIENTO;
+        else
+            estado=ERROR;
+        break;
+    }
+    case 'u': {
+        for(k=1; k<=i &&  s[k] == undo[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=UNDO;
+        else
+            estado=ERROR;
+        break;
+    }
+    case 'q': {
+        for(k=1; k<=i &&  s[k] == quit[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=QUIT;
+        else
+            estado=ERROR;
+        break;
+    }
+    default: {
+        estado=ERROR;
+        break;
+    }
+}
+
+*dirVec = s[0];
+
+return estado;
+}
+
+
+/*
 int
 leerEntrada(char nombreArchivo[36], char *dirVec)
 {
@@ -234,68 +349,67 @@ turno=getchar();
                     estado=ERROR;
 			    break;
 			}
-			default: {
-			    while(getchar() != '\n');
+			case '\n': {
 			    estado=ERROR;
+			    break;
+			}
+			default: {
+			    estado=ERROR;
+			    while(getchar() != '\n');
+			    break;
 			}
 	    }
 
 return estado;
 }
+*/
 
 void
-impMatriz(int **matriz, int dim)
+impMatriz(int **matriz, juegoT * pjugada)
 {
 int i, j;
-printf("La matriz le quedo asi:\n\n");
-for(i=0; i<dim; i++)
-    for(j=0; j<dim; j++) {
+printf("\nLa matriz le quedo asi:\n\n");
+for(i=0; i<pjugada->dim; i++) {
+    for(j=0; j<pjugada->dim; j++) {
         printf("%d\t", matriz[i][j]);
-        if((j+1)%dim==0)
+        if((j+1)%(pjugada->dim)==0)
             printf("\n");
     }
+}
+printf("Puntaje: %d\n", pjugada->puntaje);
+printf("Undos: %d\n\n", pjugada->cantUndos);
 }
 
 int
 comandos(juegoT * pjugada)
 {
-char *dirVec;
+char dirVec;
 char * nombreArchivo[36];
-int estado=0, salirAMenu, guardar, movDisp, movNoNulo=0;
+int estado=0, salirAMenu=0, guardar, movDisp, movNoNulo=0;
 do {
     estado=leerEntrada(nombreArchivo, &dirVec);
     switch(estado) {
         case MOVIMIENTO: {
-
-//        printf("matMov debe ser igual a\n");
-//        impMatriz(pjugada->matMov, pjugada->dim);
-//        printf("matActual\n");
-//        impMatriz(pjugada->matActual, pjugada->dim);
-              movimiento(&dirVec, pjugada);
-              putchar('\n');
-//        printf("matMov NO debe ser igual a\n");
-//        impMatriz(pjugada->matMov, pjugada->dim);
-//        printf("matActual\n");
-//        impMatriz(pjugada->matActual, pjugada->dim);
+            pjugada->puntAux=pjugada->puntaje;
+            movimiento(&dirVec, pjugada);
+            putchar('\n');
             movNoNulo=verificaNoNulo(pjugada);
-            if(movNoNulo==1){
+            if(movNoNulo==1) {
                 pjugada->flagUndo=0;
+                pjugada->puntAnterior=pjugada->puntAux;
                 copiaMatriz(pjugada->matActual, pjugada->matAux, pjugada->dim);
-
-                if(nuevoNum(pjugada)==0){
-                    movDisp=movDisponibles(pjugada);
-                    if(movDisp==0)
-                        printf("\n\nPerdiste\n\n");
-                }
-                putchar('\n');
+                nuevoNum(pjugada);                                     // NUEVONUM SIEMPRE ==1
+                movDisp=movDisponibles(pjugada);
+                    if(movDisp==0 && pjugada->cantUndos==0) {
+                        impMatriz(pjugada->matMov, pjugada);
+                        printf("\n\n\nAl piste...\nPerdiste!\n\n\nGracias por jugar!\n\n");
+                        return salir(salirAMenu);
+                    }
                 copiaMatriz(pjugada->matMov, pjugada->matActual, pjugada->dim);
-                impMatriz(pjugada->matActual, pjugada->dim);
-                putchar('\n');
             } else {
                 printf("Movimiento nulo\n\n");
-                impMatriz(pjugada->matActual, pjugada->dim);
             }
-
+                impMatriz(pjugada->matActual, pjugada);
                 break;
             }
         case UNDO: {
@@ -303,22 +417,21 @@ do {
             if(pjugada->cantUndos>0 && pjugada->flagUndo==0){
                 copiaMatriz(pjugada->matAux, pjugada->matActual, pjugada->dim);
                 copiaMatriz(pjugada->matAux, pjugada->matMov, pjugada->dim);
+                pjugada->puntaje=pjugada->puntAnterior;
                 pjugada->cantUndos--;
                 pjugada->flagUndo=1;
             }else if(pjugada->cantUndos<=0){
-                printf("No hay undos disponibles");
-            }else if(pjugada->flagUndo==1){
-                printf("No puede hacer dos undos seguidos");
+                printf("\nNo hay undos disponibles\n");
+            }else if(pjugada->flagUndo==1 && pjugada->puntaje==0){
+                printf("\nNo puede hacer un undo al comienzo del juego\n");
+            }else{
+                printf("\nNo puede hacer dos undos seguidos\n");
             }
-            impMatriz(pjugada->matActual, pjugada->dim);
+            impMatriz(pjugada->matActual, pjugada);
             break;
         }
         case QUIT: {
-            do {
-                salirAMenu=getint("\n1. Salir del 2048\n2. Salir al menu principal\n\n");
-                if(salirAMenu!=1 && salirAMenu!=2)
-                    printf("Comando no reconocido.\n");
-            } while(salirAMenu!=1 && salirAMenu!=2);
+            salirAMenu=salir(salirAMenu);
             do {
                 guardar=getint("\nDesea guardar antes de salir?\n1. Si.\n2. No.\n\n");
                 if(guardar!=1 && guardar!=2)
@@ -347,6 +460,15 @@ do {
 return salirAMenu;
 }
 
-
+int
+salir(int salirAMenu)
+{
+do {
+    salirAMenu=getint("\n1. Salir del 2048\n2. Salir al menu principal\n\n");
+    if(salirAMenu!=1 && salirAMenu!=2)
+        printf("Comando no reconocido.\n");
+} while(salirAMenu!=1 && salirAMenu!=2);
+return salirAMenu;
+}
 
 /* fin del front-end */
