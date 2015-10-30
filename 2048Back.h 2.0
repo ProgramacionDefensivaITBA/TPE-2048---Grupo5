@@ -64,4 +64,7 @@ void copiaMatriz(int **matOrigen, int **matDestino, int dim);
 void calcPuntaje(int i, int j, juegoT * pjugada);
 /* calcula el puntaje a partir de un movimiento valido */
 
+int ganaste(juegoT * pjugada);
+/* verifica si gano la partida */
+
 #endif // _backend2048_h
