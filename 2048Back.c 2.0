@@ -211,6 +211,11 @@ switch(*c) {
             }
             break;
     }
+    case 'N': {
+        pjugada->matMov[0][0]=2048;
+        pjugada->matMov[0][1]=1024;
+        break;
+    }
 
 }
 }
@@ -302,3 +307,15 @@ calcPuntaje(int i, int j, juegoT * pjugada)
 pjugada->puntaje = pjugada->puntaje + pjugada->matMov[i][j];
 }
 
+int
+ganaste(juegoT * pjugada)
+{
+int i, j, ganaste=0;
+for(i=0; i<pjugada->dim && ganaste==0; i++)
+    for(j=0; j<pjugada->dim && ganaste==0; j++)
+        if(pjugada->matMov[i][j]==pjugada->condGanar)
+            ganaste=1;
+return ganaste;
+}
+
+/* fin del backend.c */
