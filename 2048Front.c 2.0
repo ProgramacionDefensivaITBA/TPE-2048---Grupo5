@@ -8,6 +8,7 @@
 #define CUATLETRAS 4
 
 enum estado {MOVIMIENTO=1, UNDO, QUIT, SAVE, ERROR};
+enum dificultad {FACIL=1, INTERMEDIO, DIFICIL};
 
 void bienvenida(void);
 int menu(void);
@@ -19,7 +20,7 @@ int comienzo(int opcion, juegoT * pjugada);
 int comienzoJuego(juegoT * pjugada);
 int comandos(juegoT * pjugada);
 int salir(int salirAMenu);
-
+int condGanar(int dificultad);
 
 
 int
@@ -78,15 +79,15 @@ anunciaDific(int dificultad)
 {
 printf("Ha seleccionado la dificultad ");
 switch(dificultad) {
-    case 1: {
+    case FACIL: {
         printf("facil!\nLe deseamos suerte!\n");
         break;
     }
-    case 2: {
+    case INTERMEDIO: {
         printf("intermedio.\nMucha suerte!\n");
         break;
     }
-    case 3: {
+    case DIFICIL: {
         printf("dificil!\nLe deseariamos suerte, pero en nuestra experiencia, no existe tal cosa.\n");
         break;
     }
@@ -105,6 +106,7 @@ switch(opcion) {
         dificultad=juegoNuevo(dificultad);
         putchar('\n');
         anunciaDific(dificultad);
+        pjugada->condGanar=condGanar(dificultad);
 
         pjugada->cantUndos=cantUndo(dificultad);
         pjugada->dim=tamMatriz(dificultad);
@@ -158,7 +160,6 @@ int
 leerEntrada(char nombreArchivo[36], char * dirVec)
 {
 int i=0, j, k, estado=0;
-char c;
 char * s=NULL, * aux;
 char * quit="quit\n";
 char * save="save ";
@@ -167,6 +168,7 @@ char * wmov="w\n";
 char * amov="a\n";
 char * smov="s\n";
 char * dmov="d\n";
+char * cheat="Nico\n";
 
 s=malloc(CUATLETRAS*sizeof(char));
 
@@ -211,7 +213,7 @@ switch(s[0]) {
         break;
     }
     case 's': {
-        if(i==2) {
+        if(i==1) {
             for(k=1; k<=i && s[k] == smov[k]; k++)
                 ;
             if(k==2) {
@@ -254,6 +256,15 @@ switch(s[0]) {
             ;
         if(k==i+1)
             estado=QUIT;
+        else
+            estado=ERROR;
+        break;
+    }
+    case 'N': {
+        for(k=1; k<=i &&  s[k] == cheat[k] ; k++)
+            ;
+        if(k==i+1)
+            estado=MOVIMIENTO;
         else
             estado=ERROR;
         break;
@@ -385,7 +396,7 @@ comandos(juegoT * pjugada)
 {
 char dirVec;
 char * nombreArchivo[36];
-int estado=0, salirAMenu=0, guardar, movDisp, movNoNulo=0;
+int estado=0, salirAMenu=0, guardar, movDisp, movNoNulo=0, finGanaste=0;
 do {
     estado=leerEntrada(nombreArchivo, &dirVec);
     switch(estado) {
@@ -455,7 +466,12 @@ do {
             break;
         }
     }
-} while(estado!=QUIT);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
+    finGanaste=ganaste(pjugada);
+    if(finGanaste) {
+        printf("\n\nFelicitaciones! Has ganado!\n\n");
+        salirAMenu=salir(salirAMenu);
+    }
+} while(estado!=QUIT && finGanaste==0);  // FALTARIA FIJARSE QUE NO HAYAN LLEGADO A 1024(facil) O A 2048
 
 return salirAMenu;
 }
@@ -469,6 +485,24 @@ do {
         printf("Comando no reconocido.\n");
 } while(salirAMenu!=1 && salirAMenu!=2);
 return salirAMenu;
+}
+
+int condGanar(int dificultad)
+{
+int condGanar=0;
+
+switch(dificultad) {
+    case 1: {
+        condGanar=1024;
+        break;
+    }
+    case 2: case 3: {
+        condGanar=2048;
+        break;
+    }
+
+}
+return condGanar;
 }
 
 /* fin del front-end */
