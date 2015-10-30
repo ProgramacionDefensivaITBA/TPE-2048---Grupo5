@@ -12,6 +12,8 @@ typedef struct {
     int **matMov;
     int cantUndos;
     int puntaje;
+    int puntAux;
+    int puntAnterior;
     int dim;
     int condGanar;
     int flagUndo;
@@ -32,7 +34,7 @@ int randInt(int izq, int der);
 int calcAzar(void);
 /* calcula si ponerle un 2 o el raro caso del 4*/
 
-int nuevoNum(juegoT * pjugada);
+void nuevoNum(juegoT * pjugada);
 /* calcula donde ponerle el nuevo numero */
 
 void liberaMatriz(int i, int **matriz);
@@ -41,13 +43,11 @@ void liberaMatriz(int i, int **matriz);
 void movimiento(char * c, juegoT * pjugada);
 /* hace el movimiento de la matriz en la direccion recibida */
 
-void sumaIgualesD(int i, int j, int ** matriz);
-void sumaIgualesA(int i, int j, int ** matriz, int dim);
-void sumaIgualesW(int i, int j, int ** matriz, int dim);
-void sumaIgualesS(int i, int j, int ** matriz);
+void sumaIgualesD(int i, int j, juegoT * pjugada);
+void sumaIgualesA(int i, int j, juegoT * pjugada);
+void sumaIgualesW(int i, int j, juegoT * pjugada);
+void sumaIgualesS(int i, int j, juegoT * pjugada);
 /* condicion para que se tengan que "sumar" los numeros */
-
-/* verifica si la matriz anterior y la nueva son distintas. Devuelve cero si son iguales */
 
 int cantUndo(int dificultad);
 /* designa la cantidad de undos dependiendo la dificultad */
@@ -58,8 +58,10 @@ int movDisponibles(juegoT * pjugada);
 int verificaNoNulo(juegoT * pjugada);
 /* verifica si el movimieno fue nulo. Devuelve 0 si el movimiento fue nulo */
 
-void
-copiaMatriz(int **matOrigen, int **matDestino, int dim);
+void copiaMatriz(int **matOrigen, int **matDestino, int dim);
 /* copia la matriz matOrigen en la matriz matDestino */
+
+void calcPuntaje(int i, int j, juegoT * pjugada);
+/* calcula el puntaje a partir de un movimiento valido */
 
 #endif // _backend2048_h
