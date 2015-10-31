@@ -1,0 +1,71 @@
+#define MAX_NOMBRE 36
+#include <stdio.h>
+#include "getnum.h"
+#include <stdlib.h>
+
+enum estado {MOVIMIENTO=1, UNDO, QUIT, SAVE, ERROR};
+
+int getline(char *s);
+int leerEntrada(char nombreArchivo[MAX_NOMBRE], char *dirVec);
+
+int
+main()
+{
+    char *s;
+    char dirVec;
+    int estado;
+
+    s=malloc(sizeof(char));
+
+    estado=leerEntrada(s, &dirVec);
+    printf("estado %d, direccion %c", estado, dirVec);
+
+    return 0;
+}
+
+int
+leerEntrada(char *s, char *dirVec)
+{
+    int i, estado;
+
+    i=getline(s);
+
+    if(i !=2 && i !=5){
+        return ERROR;
+
+    }else if(i==2){
+        if(s[0]=='w' || s[0]=='a' || s[0]=='s' || s[0]=='d'){
+            *dirVec=s[0];
+            estado=MOVIMIENTO;
+        }else
+            estado=ERROR;
+
+    }else if(i==5){
+        if(s[0]=='u' && s[1]=='n' && s[2]=='d' && s[3]=='o')
+            estado=UNDO;
+
+        else if(s[0]=='q' && s[1]=='u' && s[2]=='i' && s[3]=='t')
+            estado=QUIT;
+
+        else if(s[0]=='s' && s[1]=='a' && s[2]=='v' && s[3]=='e')
+            estado=SAVE;
+            
+        else
+            estado=ERROR;
+    }
+    
+return estado;
+}
+
+int getline(char *s)
+{
+    int c, i;
+
+    i=0;
+    while((c=getchar()) != '\n')
+        s[i++]=c;
+    s[i++]=c;
+    s[i]='\0';
+    
+    return i;
+}
