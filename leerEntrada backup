@@ -19,7 +19,7 @@ main()
     s=malloc(BLOQUE*sizeof(char));
 
     estado=leerEntrada(s, &dirVec);
-    printf("estado %d, direccion %c", estado, dirVec);
+//    printf("estado %d, direccion %c", estado, dirVec);
 
     return 0;
 }
@@ -68,8 +68,8 @@ leerEntrada(char *s, char *dirVec)
             estado=ERROR;
     }
 
-    for(j=0; nombreArchivo[j]!=0; j++)
-        printf("//%c//\t", nombreArchivo[j]);
+//    for(j=0; nombreArchivo[j]!=0; j++)
+//        printf("//%c//\t", nombreArchivo[j]);
 
 //printf("++%c++", *dirVec);
 return estado;
