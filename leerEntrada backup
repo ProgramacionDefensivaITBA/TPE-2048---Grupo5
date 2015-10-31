@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "getnum.h"
 #include <stdlib.h>
+#define BLOQUE 10
 
 enum estado {MOVIMIENTO=1, UNDO, QUIT, SAVE, ERROR};
 
@@ -15,7 +16,7 @@ main()
     char dirVec;
     int estado;
 
-    s=malloc(sizeof(char));
+    s=malloc(BLOQUE*sizeof(char));
 
     estado=leerEntrada(s, &dirVec);
     printf("estado %d, direccion %c", estado, dirVec);
@@ -26,14 +27,16 @@ main()
 int
 leerEntrada(char *s, char *dirVec)
 {
-    int i, estado;
+    int i, j, k, estado;
+    char *aux;
+    char *nombreArchivo;
 
     i=getline(s);
+    nombreArchivo=malloc(sizeof(char));
 
-    if(i !=2 && i !=5){
-        return ERROR;
+//    printf("/%d/", i);
 
-    }else if(i==2){
+    if(i==2){
         if(s[0]=='w' || s[0]=='a' || s[0]=='s' || s[0]=='d'){
             *dirVec=s[0];
             estado=MOVIMIENTO;
@@ -47,25 +50,54 @@ leerEntrada(char *s, char *dirVec)
         else if(s[0]=='q' && s[1]=='u' && s[2]=='i' && s[3]=='t')
             estado=QUIT;
 
-        else if(s[0]=='s' && s[1]=='a' && s[2]=='v' && s[3]=='e')
+    }else{
+        if(s[0]=='s' && s[1]=='a' && s[2]=='v' && s[3]=='e' && s[4]==' '){
             estado=SAVE;
-            
-        else
+            for(j=0, k=5; j<MAX_NOMBRE && s[k]!='\n'; j++, k++){
+                    nombreArchivo[j]=s[k];
+                    if(j%BLOQUE==0){
+                        aux=realloc(nombreArchivo, (j+BLOQUE)*sizeof(char));
+                        if(aux==NULL)
+                            return 0;
+                        else
+                            nombreArchivo=aux;
+                                }
+            }
+            nombreArchivo[j]=0;
+        }else
             estado=ERROR;
     }
-    
+
+    for(j=0; nombreArchivo[j]!=0; j++)
+        printf("//%c//\t", nombreArchivo[j]);
+
+//printf("++%c++", *dirVec);
 return estado;
+
 }
 
 int getline(char *s)
 {
     int c, i;
+    char *aux;
 
     i=0;
-    while((c=getchar()) != '\n')
+    while((c=getchar()) != '\n'){
         s[i++]=c;
+        if(i%BLOQUE==0){
+            aux=realloc(s, (i+BLOQUE)*sizeof(char));
+            if(aux==NULL)
+                return 0;
+            else
+                s=aux;
+        }
+    }
     s[i++]=c;
     s[i]='\0';
-    
+
+
+//    for(j=0; j<i; j++)
+//        printf("//%c//\t", s[j]);
+
     return i;
 }
