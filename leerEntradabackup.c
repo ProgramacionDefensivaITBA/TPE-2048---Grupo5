@@ -19,10 +19,13 @@ main()
 
     nombreArchivo=malloc(BLOQUE*sizeof(int));
     s=malloc(BLOQUE*sizeof(char));
-
+    
+    if(s==NULL || nombreArchivo==NULL)
+        return ??;
+        
     estado=leerEntrada(s, nombreArchivo, &dirVec);
 
-    printf("estado %d, direccion %c", estado, dirVec);
+/*    printf("estado %d, direccion %c", estado, dirVec);
 
     printf("\nEste es el nombre que se guarda:\n");
     for(j=0; nombreArchivo[j]!=0; j++)
@@ -32,7 +35,7 @@ main()
     for(j=0; s[j]!=' '; j++)
         printf("%c", s[j]);
     putchar('\n');
-
+*/
     return 0;
 }
 
