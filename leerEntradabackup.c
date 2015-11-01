@@ -1,38 +1,48 @@
-#define MAX_NOMBRE 36
 #include <stdio.h>
 #include "getnum.h"
 #include <stdlib.h>
+
 #define BLOQUE 10
+#define MAX_NOMBRE 36
 
 enum estado {MOVIMIENTO=1, UNDO, QUIT, SAVE, ERROR};
 
 int getline(char *s);
-int leerEntrada(char nombreArchivo[MAX_NOMBRE], char *dirVec);
+int leerEntrada(char *s, char *nombreArchivo, char *dirVec);
 
 int
 main()
 {
-    char *s;
+    char *s, *nombreArchivo;
     char dirVec;
-    int estado;
+    int estado, j;
 
+    nombreArchivo=malloc(BLOQUE*sizeof(int));
     s=malloc(BLOQUE*sizeof(char));
 
-    estado=leerEntrada(s, &dirVec);
-//    printf("estado %d, direccion %c", estado, dirVec);
+    estado=leerEntrada(s, nombreArchivo, &dirVec);
+
+    printf("estado %d, direccion %c", estado, dirVec);
+
+    printf("\nEste es el nombre que se guarda:\n");
+    for(j=0; nombreArchivo[j]!=0; j++)
+        printf("%c", nombreArchivo[j]);
+
+    printf("\n\nAca deberia decir save:\n");
+    for(j=0; s[j]!=' '; j++)
+        printf("%c", s[j]);
+    putchar('\n');
 
     return 0;
 }
 
 int
-leerEntrada(char *s, char *dirVec)
+leerEntrada(char *s, char *nombreArchivo, char *dirVec)
 {
     int i, j, k, estado;
     char *aux;
-    char *nombreArchivo;
 
     i=getline(s);
-    nombreArchivo=malloc(sizeof(char));
 
 //    printf("/%d/", i);
 
@@ -49,6 +59,8 @@ leerEntrada(char *s, char *dirVec)
 
         else if(s[0]=='q' && s[1]=='u' && s[2]=='i' && s[3]=='t')
             estado=QUIT;
+        else
+            estado=ERROR;
 
     }else{
         if(s[0]=='s' && s[1]=='a' && s[2]=='v' && s[3]=='e' && s[4]==' '){
@@ -68,10 +80,11 @@ leerEntrada(char *s, char *dirVec)
             estado=ERROR;
     }
 
-//    for(j=0; nombreArchivo[j]!=0; j++)
+//for(j=0; nombreArchivo[j]!=0; j++)
 //        printf("//%c//\t", nombreArchivo[j]);
 
 //printf("++%c++", *dirVec);
+
 return estado;
 
 }
