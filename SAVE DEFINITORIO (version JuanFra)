@@ -1,0 +1,45 @@
+int
+guardarPartida(char * nombreArchivo, juegoT * pjugada)
+{
+FILE * pPartida;
+int i, error=0;
+unsigned short int dificultad, aux, cantUndos;
+unsigned int puntaje;
+
+pPartida = fopen(nombreArchivo, "wb");
+
+dificultad = (unsigned short int) ((10 - pjugada->dim) / 2);
+puntaje = (unsigned int) pjugada->puntaje;
+cantUndos = (unsigned short int) pjugada->cantUndos;
+
+if(pPartida == NULL)
+    error=1;
+else {
+    fwrite(&dificultad, sizeof(unsigned short int), 1, pPartida);
+    fwrite(&puntaje, sizeof(unsigned short int), 1, pPartida);
+    fwrite(&cantUndos, sizeof(unsigned short int), 1, pPartida);
+
+    for(i=0; i<pjugada->dim; i++)
+        for(j=0; j<pjugada->dim; j++) {
+            aux = pjugada->matActual[i][j];
+            fwrite(&aux, sizeof(unsigned short int), 1, pPartida);
+        }
+
+/*
+    fwrite(&juegoT.matActual, sizeof(juegoT.matActual), 1, pPartida);
+    fwrite(&juegoT.cantUndos, sizeof(juegoT.cantUndos), 1, pPartida);
+    fwrite(&juegoT.puntaje, sizeof(juegoT.puntaje), 1, pPartida);
+    fwrite(&juegoT.dim, sizeof(juegoT.dim), 1, pPartida);
+    fwrite(&juegoT.condGanar, sizeof(juegoT.condGanar), 1, pPartida);
+*/
+/*
+    for(i = 0; i < juegoT.dim ; i++) {
+        fwrite(juegoT.matActual[i],sizeof(juegoT.matActual[0][0]),juegoT.dim, pPartida);
+    }
+*/
+}
+
+fclose(pPartida);
+
+return error;
+}
