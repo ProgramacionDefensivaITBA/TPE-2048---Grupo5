@@ -26,7 +26,7 @@ char * tomaLinea(void);
 
 
 int
-main()                      // aca esta el main
+main()
 {
 srand(time(NULL));
 
@@ -126,11 +126,11 @@ switch(opcion) {
         pjugada->puntaje=0;
         pjugada->puntAux=0;
         pjugada->puntAnterior=0;
-        nuevoNum(pjugada);          //agrego 2 random a la matriz
+        nuevoNum(pjugada);          					//Agrego 2 random a la matriz
         nuevoNum(pjugada);
         pjugada->flagUndo=1;
-        copiaMatriz(pjugada->matMov, pjugada->matActual, pjugada->dim);     //guardo la nueva en la actual
-        copiaMatriz(pjugada->matActual, pjugada->matAux, pjugada->dim);     // guardo la nueva en la aux
+        copiaMatriz(pjugada->matMov, pjugada->matActual, pjugada->dim);     //Guardo la nueva en la actual
+        copiaMatriz(pjugada->matActual, pjugada->matAux, pjugada->dim);     //Guardo la nueva en la aux
 
         salir=comienzoJuego(pjugada);
         break;
@@ -167,7 +167,7 @@ comienzoJuego(juegoT * pjugada)
 int salir, flagComienzo=1;
 
 putchar('\n');
-impMatriz(pjugada->matActual, pjugada);       //imprimo y a jugar
+impMatriz(pjugada->matActual, pjugada);       					//Imprimo y a jugar
 
 salir=comandos(pjugada, &flagComienzo);
 
@@ -187,7 +187,7 @@ char * wmov="w\n";
 char * amov="a\n";
 char * smov="s\n";
 char * dmov="d\n";
-char * cheat="Nico\n";	// para facilitar el checkeo de la condicion de ganar
+char * cheat="Nico\n";						// Para facilitar el checkeo de la condicion de ganar
 
 ent=malloc(CUAT_LETRAS*sizeof(*ent));
 
@@ -240,7 +240,7 @@ switch(ent[0]) {
             } else
                 estado=ERROR;
         } else {
-            for(k=1; k<=CUAT_LETRAS+1 &&  ent[k] == save[k] ; k++)  // save + espacio
+            for(k=1; k<=CUAT_LETRAS+1 &&  ent[k] == save[k] ; k++)  			// "save" + ' '
                 ;
             if(k==5) {
                 for(j=0; k<i && k<MAX_NOMBRE; k++, j++)
@@ -338,7 +338,7 @@ do {
                 movDisp=movDisponibles(pjugada);
                     if(movDisp==0 && pjugada->cantUndos==0) {
                         impMatriz(pjugada->matMov, pjugada);
-                        printf("\n\n\nAl piste...\nPerdiste!\n\n\nGracias por jugar!\n\n");
+                        printf("\n\n\nPerdiste!\n\n\nGracias por jugar!\n\n");
                         return salir(salirAMenu);
                     }
                 copiaMatriz(pjugada->matMov, pjugada->matActual, pjugada->dim);
@@ -441,4 +441,4 @@ char * tomaLinea(void)
 }
 
 
-/* fin del front-end */
+/* Fin del front-end */
