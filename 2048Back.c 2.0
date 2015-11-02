@@ -3,21 +3,27 @@
 #include <stdlib.h>
 #include "Backend.h"
 
+#define CANTELEM 1
+
+#define CALCDIFIC ((10 - pjugada->dim) / 2)
+#define CALCDIM (10 - dificultad * 2)
+
+enum dificultad {FACIL=1, INTERMEDIO, DIFICIL};
 
 int tamMatriz(int dificultad)
 {
 int tamMat=0;
 
 switch(dificultad) {
-    case 1: {
+    case FACIL: {
         tamMat=8;
         break;
     }
-    case 2: {
+    case INTERMEDIO: {
         tamMat=6;
         break;
     }
-    case 3: {
+    case DIFICIL: {
         tamMat=4;
         break;
     }
@@ -31,20 +37,38 @@ int undo=0;
 
 switch(dificultad) {
 
-    case 1: {
+    case FACIL: {
               undo=8;
               break;
     }
-    case 2: {
+    case INTERMEDIO: {
               undo=4;
               break;
     }
-    case 3: {
+    case DIFICIL: {
               undo=2;
               break;
     }
 }
 return undo;
+}
+
+int condGanar(int dificultad)
+{
+int condGanar=0;
+
+switch(dificultad) {
+    case FACIL: {
+        condGanar=1024;
+        break;
+    }
+    case INTERMEDIO: case DIFICIL: {
+        condGanar=2048;
+        break;
+    }
+
+}
+return condGanar;
 }
 
 int **creaMatriz(int dim)                       // faltan cosas
@@ -316,6 +340,88 @@ for(i=0; i<pjugada->dim && ganaste==0; i++)
         if(pjugada->matMov[i][j]==pjugada->condGanar)
             ganaste=1;
 return ganaste;
+}
+
+int
+guardarPartida(char * nombreArchivo, juegoT * pjugada)
+{
+FILE * pPartida;
+int i, j, error=0;
+unsigned short int dificultad, aux, cantUndos;
+unsigned int puntaje;
+
+pPartida = fopen(nombreArchivo, "wb");
+
+dificultad = (unsigned short int) CALCDIFIC;
+puntaje = (unsigned int) pjugada->puntaje;
+cantUndos = (unsigned short int) pjugada->cantUndos;
+
+if(pPartida == NULL)
+    error=1;
+else {
+    fwrite(&dificultad, sizeof(unsigned short int), CANTELEM, pPartida);
+    fwrite(&puntaje, sizeof(unsigned int), CANTELEM, pPartida);
+    fwrite(&cantUndos, sizeof(unsigned short int), CANTELEM, pPartida);
+
+    for(i=0; i<pjugada->dim; i++)
+        for(j=0; j<pjugada->dim; j++) {
+            aux = (unsigned short int) pjugada->matActual[i][j];
+            fwrite(&aux, sizeof(unsigned short int), CANTELEM, pPartida);
+        }
+}
+
+fclose(pPartida);
+
+return error;
+}
+
+int
+cargarPartida(char * nombreArchivo, juegoT * pjugada)
+{
+FILE * pPartida;
+int i, j, error=0;
+unsigned short int dificultad, aux, cantUndos;
+unsigned int puntaje;
+
+
+if(pjugada==NULL)
+    error=1;
+
+pPartida = fopen(nombreArchivo,"rb");
+
+if(pPartida == NULL) {
+    error=1;
+} else {
+    pjugada->flagUndo = 1;
+    pjugada->puntAnterior = 0;
+    pjugada->puntAux = 0;
+
+    fread(&dificultad, sizeof(unsigned short int), CANTELEM, pPartida);
+    pjugada->dim = (int) CALCDIM;
+    pjugada->condGanar = condGanar((int) dificultad);
+
+    fread(&puntaje, sizeof(unsigned int), CANTELEM, pPartida);
+    pjugada->puntaje = (int) puntaje;
+
+    fread(&cantUndos, sizeof(unsigned short int), CANTELEM, pPartida);
+    pjugada->cantUndos = (int) cantUndos;
+
+    pjugada->matMov=creaMatriz(pjugada->dim);
+    pjugada->matActual=creaMatriz(pjugada->dim);
+    pjugada->matAux=creaMatriz(pjugada->dim);
+
+    for(i=0; i<pjugada->dim; i++)
+        for(j=0; j<pjugada->dim; j++) {
+            fread(&aux, sizeof(unsigned short int), CANTELEM, pPartida);
+            pjugada->matActual[i][j] = pjugada->matMov[i][j] = pjugada->matAux[i][j] = (int) aux;
+        }
+}
+if(getc(pPartida) != EOF)
+    error=1;
+
+fclose(pPartida);
+
+return error;
 }
 
 /* fin del backend.c */
