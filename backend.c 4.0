@@ -71,7 +71,7 @@ switch(dificultad) {
 return condGanar;
 }
 
-int **creaMatriz(int dim)                       // faltan cosas
+int **creaMatriz(int dim)
 {
 int **matriz;
 int *aux;
@@ -164,7 +164,7 @@ void movimiento(char * c, juegoT * pjugada)
 {
 int i, j, k, l;
 /*
-de atras para adelante... { if( ! 0 ) then { if(match) { num*2 ; "free"(elDeSobra)... rellenar con ceros ; } } }
+*De atras para adelante... { if( ! 0 ) then { if(match) { num*2 ; "free"(elDeSobra)... rellenar con ceros ; } } }
 */
 switch(*c) {
     case 'd': {
@@ -266,7 +266,7 @@ int calcAzar(void)
 {
 double azar;
 azar = rand()/(double)RAND_MAX*(100-1)+1;
-/* porcentaje de probabilidad de que salga un 4 es 11% */
+/* Porcentaje de probabilidad de que salga un 4 es 11% */
 if(azar<12)
     return 4;
 else
@@ -424,4 +424,4 @@ fclose(pPartida);
 return error;
 }
 
-/* fin del backend.c */
+/* Fin del backend.c */
