@@ -1,8 +1,8 @@
 #include <stdarg.h>
 
-#ifndef _backend2048_h
+#ifndef _backend_h
 
-#define _backend2048_h
+#define _backend_h
 
 #define BORRA_BUFFER while (getchar() != '\n')
 
@@ -67,4 +67,13 @@ void calcPuntaje(int i, int j, juegoT * pjugada);
 int ganaste(juegoT * pjugada);
 /* verifica si gano la partida */
 
-#endif // _backend2048_h
+int condGanar(int dificultad);
+/* calcula el objetivo dependiendo de la dificultad */
+
+int guardarPartida(char * nombreArchivo, juegoT * pjugada);
+/* guarda la partida actual */
+
+int cargarPartida(char * nombreArchivo, juegoT * pjugada);
+/* carga una partida guardada anteriormente */
+
+#endif // _backend_h
