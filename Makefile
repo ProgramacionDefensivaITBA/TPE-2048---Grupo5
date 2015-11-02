@@ -1,2 +1,2 @@
-2048:	2048.c
-	gcc -o Frontend.c Backend.c Backend.h getnum.c -Wall -pedantic
+all:
+	gcc -o -Wall -pedantic frontend.c backend.c backend.h getnum2.c getnum.h
