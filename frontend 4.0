@@ -179,7 +179,7 @@ int
 leerEntrada(char nombreArchivo[MAX_NOMBRE], char * dirVec)
 {
 int i=0, j, k, estado=0;
-char * s=NULL, * aux;
+char * ent=NULL, * aux;
 char * quit="quit\n";
 char * save="save ";
 char * undo="undo\n";
@@ -187,34 +187,34 @@ char * wmov="w\n";
 char * amov="a\n";
 char * smov="s\n";
 char * dmov="d\n";
-char * cheat="Nico\n";
+char * cheat="Nico\n";	// para facilitar el checkeo de la condicion de ganar
 
-s=malloc(CUAT_LETRAS*sizeof(char));
+ent=malloc(CUAT_LETRAS*sizeof(*ent));
 
-s[i]=getchar();
+ent[i]=getchar();
 
-if(s[i] == '\n')
+if(ent[i] == '\n')
     return ERROR;
 
 do {
     i++;
     if(i%CUAT_LETRAS == 0) {
-        aux=realloc(s, (i+CUAT_LETRAS)*sizeof(char*));
+        aux=realloc(ent, (i+CUAT_LETRAS)*sizeof(*ent));
         if(aux==NULL) {
-            free(s);
+            free(ent);
             return ERROR;
         }
-        s=aux;
+        ent=aux;
     }
 
-    s[i]=getchar();
-} while(s[i] != '\n');
+    ent[i]=getchar();
+} while(ent[i] != '\n');
 
-s=realloc(s, i*sizeof(char*));
+ent=realloc(ent, i*sizeof(char*));
 
-switch(s[0]) {
+switch(ent[0]) {
     case 'w': {
-        for(k=1; k<=i &&  s[k] == wmov[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == wmov[k] ; k++)
             ;
         if(k==i+1)
             estado=MOVIMIENTO;
@@ -223,7 +223,7 @@ switch(s[0]) {
         break;
     }
     case 'a': {
-        for(k=1; k<=i &&  s[k] == amov[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == amov[k] ; k++)
             ;
         if(k==i+1)
             estado=MOVIMIENTO;
@@ -233,18 +233,18 @@ switch(s[0]) {
     }
     case 's': {
         if(i==1) {
-            for(k=1; k<=i && s[k] == smov[k]; k++)
+            for(k=1; k<=i && ent[k] == smov[k]; k++)
                 ;
             if(k==2) {
                 estado=MOVIMIENTO;
             } else
                 estado=ERROR;
         } else {
-            for(k=1; k<=CUAT_LETRAS+1 &&  s[k] == save[k] ; k++)  // save + espacio
+            for(k=1; k<=CUAT_LETRAS+1 &&  ent[k] == save[k] ; k++)  // save + espacio
                 ;
             if(k==5) {
                 for(j=0; k<i && k<MAX_NOMBRE; k++, j++)
-                    nombreArchivo[j]=s[k];
+                    nombreArchivo[j]=ent[k];
                 estado=SAVE;
                 nombreArchivo[j]=0;
             } else
@@ -253,7 +253,7 @@ switch(s[0]) {
         break;
     }
     case 'd': {
-        for(k=1; k<=i &&  s[k] == dmov[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == dmov[k] ; k++)
             ;
         if(k==i+1)
             estado=MOVIMIENTO;
@@ -262,7 +262,7 @@ switch(s[0]) {
         break;
     }
     case 'u': {
-        for(k=1; k<=i &&  s[k] == undo[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == undo[k] ; k++)
             ;
         if(k==i+1)
             estado=UNDO;
@@ -271,7 +271,7 @@ switch(s[0]) {
         break;
     }
     case 'q': {
-        for(k=1; k<=i &&  s[k] == quit[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == quit[k] ; k++)
             ;
         if(k==i+1)
             estado=QUIT;
@@ -280,7 +280,7 @@ switch(s[0]) {
         break;
     }
     case 'N': {
-        for(k=1; k<=i &&  s[k] == cheat[k] ; k++)
+        for(k=1; k<=i &&  ent[k] == cheat[k] ; k++)
             ;
         if(k==i+1)
             estado=MOVIMIENTO;
@@ -294,7 +294,7 @@ switch(s[0]) {
     }
 }
 
-*dirVec = s[0];
+*dirVec = ent[0];
 
 return estado;
 }
@@ -375,7 +375,7 @@ do {
             } while(guardar!=1 && guardar!=2);
             if(guardar==1) {
                 printf("\nIntroduzca el nombre a guardar:\n");
-				nombreArchivo=tomaLinea();
+		nombreArchivo=tomaLinea();
                 error=guardarPartida(nombreArchivo, pjugada);
                 if(error) {
                     printf("\nSe produjo un error al intentar guardar.\nSe ha regresado a la partida.\n\n");
