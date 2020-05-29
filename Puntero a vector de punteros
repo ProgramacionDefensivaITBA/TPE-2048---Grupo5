@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+void **matrixGen(int row, int col, int size)
+{
+    int i;
+    void p;
+    p=malloc(sizeof(*p)*row);
+    if (p==NULL)
+        return p;
+    else
+    {
+        for (i=0; i<row; i++)
+        {
+            *p[i]=malloc(size*col)
+            if (*p[i]==NULL)
+            {
+                matrixFree(i-1,p)
+                return NULL;
+            }
+        }
+    }
+    return p;
+}
+
+void matrixFree(int nrows, void **p)
+{
+
+    /* the variable 'nrows' is the number of rows that the program will delete, this is specific for the matrixGen function.
+     * If nrows is set equal to the number of rows in the matrix, it will free the memory of all the matrix.
+     * example: matrixFree(number of rows, pointer of the matrix);
+     */
+
+    for (i;i>=0;i--)
+        free(*p[i]);
+    free(p);
+}

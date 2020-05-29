@@ -1,0 +1,25 @@
+int cantUndo(int dificultad)
+{
+  int undo;
+  
+  switch(dificultad) {
+  
+    case 1: {
+              undo=8;
+              break;
+            }
+            
+    case 2: {
+              undo=4;
+              break;
+            }
+            
+    case 3: {
+              undo=2;
+              break;
+            }
+  }
+            
+  return undo;
+  
+}

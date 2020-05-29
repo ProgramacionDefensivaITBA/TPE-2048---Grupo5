@@ -1,0 +1,79 @@
+#include <stdarg.h>
+
+#ifndef _backend_h
+
+#define _backend_h
+
+#define BORRA_BUFFER while (getchar() != '\n')
+
+typedef struct {
+    int **matActual;
+    int **matAux;
+    int **matMov;
+    int cantUndos;
+    int puntaje;
+    int puntAux;
+    int puntAnterior;
+    int dim;
+    int condGanar;
+    int flagUndo;
+} juegoT;
+
+int tamMatriz(int dificultad);
+/* elige el tamaño de la matriz a partir de la dificultad */
+
+int **creaMatriz(int dim);
+/* crea la matriz a partir del tamaño que le pases */
+
+double randNormalize(void);
+/* numero random entre 0 y 1 inclusive */
+
+int randInt(int izq, int der);
+/* numero random en un intervalo cerrado [izq, der] usando la funcion randNormalize */
+
+int calcAzar(void);
+/* calcula si debe agregar un 2 o el raro caso de un 4 */
+
+void nuevoNum(juegoT * pjugada);
+/* calcula donde ubicar el nuevo numero */
+
+void liberaMatriz(int i, int **matriz);
+/* si no hay espacio para jugar, libera la matriz antes de salir */
+
+void movimiento(char * c, juegoT * pjugada);
+/* hace el movimiento de la matriz en la direccion recibida */
+
+void sumaIgualesD(int i, int j, juegoT * pjugada);
+void sumaIgualesA(int i, int j, juegoT * pjugada);
+void sumaIgualesW(int i, int j, juegoT * pjugada);
+void sumaIgualesS(int i, int j, juegoT * pjugada);
+/* condicion para que se tengan que "sumar" los numeros */
+
+int cantUndo(int dificultad);
+/* designa la cantidad de undos dependiendo la dificultad */
+
+int movDisponibles(juegoT * pjugada);
+/* verifica si hay movimientos disponibles. Devuelve 1 si los hay */
+
+int verificaNoNulo(juegoT * pjugada);
+/* verifica si el movimieno fue nulo. En dicho caso devuelve 0 */
+
+void copiaMatriz(int **matOrigen, int **matDestino, int dim);
+/* copia la matriz matOrigen en la matriz matDestino */
+
+void calcPuntaje(int i, int j, juegoT * pjugada);
+/* calcula el puntaje a partir de un movimiento valido */
+
+int ganaste(juegoT * pjugada);
+/* verifica si gano la partida */
+
+int condGanar(int dificultad);
+/* calcula el objetivo dependiendo de la dificultad */
+
+int guardarPartida(char * nombreArchivo, juegoT * pjugada);
+/* guarda la partida actual */
+
+int cargarPartida(char * nombreArchivo, juegoT * pjugada);
+/* carga una partida guardada anteriormente */
+
+#endif // _backend_h
